@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class departementGUI extends JFrame {
     private javax.swing.JPanel mainPanel;
@@ -27,8 +29,17 @@ public class departementGUI extends JFrame {
     private JPanel AdminInfo;
     private JLabel AdminLabelInfo;
     private JButton AdminLogoutButton;
+    private JButton OWLoginButton;
+    private JButton OWLogoutButton;
+    private JPanel OWInfo;
+    private JLabel OWLabelInfo;
     //Admin instance - there is only one admin
     Admin admin = new Admin(1,"Zyta", "Guzek", "zg@gmail.com", "111222333", "idk", "admin123");
+
+    //Office Workers
+    OfficeWorker OW1 = new OfficeWorker(1, "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1");
+    OfficeWorker OW2 = new OfficeWorker(2, "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2");
+    ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2));
 
     public static void main(String[] args) {
         departementGUI departementGUIInstance = new departementGUI();
@@ -74,6 +85,40 @@ public class departementGUI extends JFrame {
                 AdminInfo.setVisible(false);
                 AdminLogoutButton.setEnabled(false);
                 AdminLoginButton.setEnabled(true);
+            }
+        });
+
+        //Office worker login
+        OWLoginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userName = OWNameInput.getText();
+                String userPassword = String.valueOf(OWPasswordInput.getPassword());
+                boolean isLogged = false;
+
+                for(OfficeWorker OW : listOfOW) {
+                    if (OW.name.equals(userName) && OW.password.equals(userPassword)) {
+                        isLogged = true;
+                        OWInfo.setVisible(true);
+                        OWLogoutButton.setEnabled(true);
+                        OWLoginButton.setEnabled(false);
+                        OWLabelInfo.setText("Witaj " + OW.name);
+                        break;
+                    }
+                }
+                if(!isLogged){
+                    JOptionPane.showMessageDialog(null,"Błędne dane!");
+                }
+            }
+        });
+        OWLogoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OWNameInput.setText("");
+                OWPasswordInput.setText("");
+                OWInfo.setVisible(false);
+                OWLogoutButton.setEnabled(false);
+                OWLoginButton.setEnabled(true);
             }
         });
     }
