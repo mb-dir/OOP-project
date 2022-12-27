@@ -33,12 +33,24 @@ public class departementGUI extends JFrame {
     private JButton OWLogoutButton;
     private JPanel OWInfo;
     private JLabel OWLabelInfo;
+    private JLabel UserHelloLabel;
+    private JTextField userNameInput;
+    private JTextField userSurnameInput;
+    private JTextField userEmailInput;
+    private JTextField userPhoneNumberInput;
+    private JComboBox departmentsBox;
+    private JComboBox OWBox;
+    private JTextField dateInput;
+    private JTextField hourInput;
+    private JButton umówWizytęButton;
     //Admin instance - there is only one admin
     Admin admin = new Admin(1,"Zyta", "Guzek", "zg@gmail.com", "111222333", "idk", "admin123");
 
     //Office Workers
-    OfficeWorker OW1 = new OfficeWorker(1, "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1");
-    OfficeWorker OW2 = new OfficeWorker(2, "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2");
+    Department d1 = new Department("ZUS", "Izdebki", "21-37");
+    Department d2 = new Department("KRUS", "ChujCieTo", "22-37");
+    OfficeWorker OW1 = new OfficeWorker(1, "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1", d1);
+    OfficeWorker OW2 = new OfficeWorker(2, "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2", d2);
     ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2));
 
     public static void main(String[] args) {
