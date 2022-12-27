@@ -42,16 +42,21 @@ public class departementGUI extends JFrame {
     private JComboBox OWBox;
     private JTextField dateInput;
     private JTextField hourInput;
-    private JButton umówWizytęButton;
+    private JButton visitButton;
     //Admin instance - there is only one admin
     Admin admin = new Admin(1,"Zyta", "Guzek", "zg@gmail.com", "111222333", "idk", "admin123");
 
     //Office Workers
-    Department d1 = new Department("ZUS", "Izdebki", "21-37");
-    Department d2 = new Department("KRUS", "ChujCieTo", "22-37");
+    Department d1 = new Department("1","ZUS", "Izdebki", "21-37");
+    Department d2 = new Department("2","KRUS", "ChujCieTo", "22-37");
+    Department d3 = new Department("3","KRUS", "Dupa", "22-37");
+
     OfficeWorker OW1 = new OfficeWorker(1, "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1", d1);
     OfficeWorker OW2 = new OfficeWorker(2, "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2", d2);
-    ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2));
+    OfficeWorker OW3 = new OfficeWorker(3, "Jan", "Dupa", "jd@gmail.com", "222333544", 2,4600, "dupa2", d3);
+
+    ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2, OW3));
+    ArrayList<Department> listOfDepartments = new ArrayList<Department>(Arrays.asList(d1, d2, d3));
 
     public static void main(String[] args) {
         departementGUI departementGUIInstance = new departementGUI();
@@ -69,6 +74,12 @@ public class departementGUI extends JFrame {
         OWHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
         AdminHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
         UserHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
+
+        //Basic combobox setup
+        departmentsBox.addItem("");
+        for (Department d:listOfDepartments) {
+            departmentsBox.addItem(d.name);
+        }
 
         //Admin login
         AdminLoginButton.addActionListener(new ActionListener() {
@@ -132,6 +143,20 @@ public class departementGUI extends JFrame {
                 OWInfo.setVisible(false);
                 OWLogoutButton.setEnabled(false);
                 OWLoginButton.setEnabled(true);
+            }
+        });
+        departmentsBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String currentDepartment = departmentsBox.getSelectedItem().toString();
+
+                OWBox.removeAllItems();
+                OWBox.addItem("");
+                for (OfficeWorker ow:listOfOW) {
+                    if(ow.department.name.equals(currentDepartment)){
+                        OWBox.addItem(ow.name + " " + ow.surname);
+                    }
+                }
             }
         });
     }
