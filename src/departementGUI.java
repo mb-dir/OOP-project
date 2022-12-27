@@ -68,6 +68,7 @@ public class departementGUI extends JFrame {
         //global styles
         OWHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
         AdminHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
+        UserHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
 
         //Admin login
         AdminLoginButton.addActionListener(new ActionListener() {
