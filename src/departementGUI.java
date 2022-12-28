@@ -43,6 +43,7 @@ public class departementGUI extends JFrame {
     private JTextField dateInput;
     private JTextField hourInput;
     private JButton visitButton;
+    private JList OWVisitsList;
     //Admin instance - there is only one admin
     Admin admin = new Admin(1,"Zyta", "Guzek", "zg@gmail.com", "111222333", "idk", "admin123");
 
@@ -57,6 +58,8 @@ public class departementGUI extends JFrame {
 
     ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2, OW3));
     ArrayList<Department> listOfDepartments = new ArrayList<Department>(Arrays.asList(d1, d2, d3));
+
+    ArrayList<Visit> listOfVisits= new ArrayList<Visit>();
 
     public static void main(String[] args) {
         departementGUI departementGUIInstance = new departementGUI();
@@ -126,7 +129,7 @@ public class departementGUI extends JFrame {
                         OWInfo.setVisible(true);
                         OWLogoutButton.setEnabled(true);
                         OWLoginButton.setEnabled(false);
-                        OWLabelInfo.setText("Witaj " + OW.name);
+                        OWLabelInfo.setText("Witaj " + OW.name + ", oto lista Twoich wizyt");
                         break;
                     }
                 }
@@ -157,6 +160,30 @@ public class departementGUI extends JFrame {
                         OWBox.addItem(ow.name + " " + ow.surname);
                     }
                 }
+            }
+        });
+        visitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userName = userNameInput.getText();
+                String userSurname = userSurnameInput.getText();
+                String userEmail = userEmailInput.getText();
+                String userPhone= userPhoneNumberInput.getText();
+
+                User newUser = new User(1, userName, userSurname, userEmail, userPhone);
+                String dateOfVisit = dateInput.getText();
+                String hourOfVisit = hourInput.getText();
+                String currentOWName = OWBox.getSelectedItem().toString();
+                OfficeWorker currentOW = null;
+                for (OfficeWorker ow:listOfOW) {
+                    if(ow.name.equals(currentOWName)){
+                        currentOW = ow;
+                    }
+                }
+                Visit newVisit = new Visit(newUser, currentOW, dateOfVisit, hourOfVisit);
+
+                listOfVisits.add(newVisit);
+                JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
             }
         });
     }
