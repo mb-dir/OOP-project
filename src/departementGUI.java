@@ -45,17 +45,18 @@ public class departementGUI extends JFrame {
     private JTextField hourInput;
     private JButton visitButton;
     private JTable OWListOfVisits;
+    private JTable adminListOfVisits;
     //Admin instance - there is only one admin
     Admin admin = new Admin(1,"Zyta", "Guzek", "zg@gmail.com", "111222333", "idk", "admin123");
 
     //Office Workers
     Department d1 = new Department("1","ZUS", "Izdebki", "21-37");
     Department d2 = new Department("2","KRUS", "ChujCieTo", "22-37");
-    Department d3 = new Department("3","KRUS", "Dupa", "22-37");
+    Department d3 = new Department("3","Zakład pogrzebowy", "Dupa", "22-37");
 
     OfficeWorker OW1 = new OfficeWorker(1, "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1", d1);
     OfficeWorker OW2 = new OfficeWorker(2, "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2", d2);
-    OfficeWorker OW3 = new OfficeWorker(3, "Jan", "Dupa", "jd@gmail.com", "222333544", 2,4600, "dupa2", d3);
+    OfficeWorker OW3 = new OfficeWorker(3, "Dzban", "Dupa", "jd@gmail.com", "222333544", 2,4600, "dupa2", d3);
 
     ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2, OW3));
     ArrayList<Department> listOfDepartments = new ArrayList<Department>(Arrays.asList(d1, d2, d3));
@@ -72,7 +73,7 @@ public class departementGUI extends JFrame {
         super("e-Urząd");
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(700, 500);
+        this.setSize(800, 500);
 
         //global styles
         OWHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
@@ -99,7 +100,16 @@ public class departementGUI extends JFrame {
                     AdminInfo.setVisible(true);
                     AdminLogoutButton.setEnabled(true);
                     AdminLoginButton.setEnabled(false);
-                    AdminLabelInfo.setText("Witaj " + admin.name);
+                    AdminLabelInfo.setText("Witaj " + admin.name + ", oto lista wszystkich wizyt");
+
+                    DefaultTableModel dtm = new DefaultTableModel(0, 0);
+                    String header[] = new String[] { "Imie", "Nazwisko", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" };
+                    dtm.setColumnIdentifiers(header);
+                    adminListOfVisits.setModel(dtm);
+
+                    for (Visit v:listOfVisits) {
+                        dtm.addRow(new Object[]{v.user.name, v.user.surname, v.user.email, v.user.phoneNumber, v.date, v.hour, v.officeWorker.name+" "+v.officeWorker.surname, v.officeWorker.department.name});
+                    }
                 }else{
                     JOptionPane.showMessageDialog(null,"Błędne dane!");
                 }
