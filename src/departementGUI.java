@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,7 +44,7 @@ public class departementGUI extends JFrame {
     private JTextField dateInput;
     private JTextField hourInput;
     private JButton visitButton;
-    private JList OWVisitsList;
+    private JTable OWListOfVisits;
     //Admin instance - there is only one admin
     Admin admin = new Admin(1,"Zyta", "Guzek", "zg@gmail.com", "111222333", "idk", "admin123");
 
@@ -130,6 +131,17 @@ public class departementGUI extends JFrame {
                         OWLogoutButton.setEnabled(true);
                         OWLoginButton.setEnabled(false);
                         OWLabelInfo.setText("Witaj " + OW.name + ", oto lista Twoich wizyt");
+
+                        DefaultTableModel dtm = new DefaultTableModel(0, 0);
+                        String header[] = new String[] { "Imie", "Nazwisko", "E-mail", "Numer tel.", "Data", "godzina" };
+                        dtm.setColumnIdentifiers(header);
+                        OWListOfVisits.setModel(dtm);
+
+                        for (Visit v:listOfVisits) {
+                            if(v.officeWorker.name.equals(OW.name)){
+                                dtm.addRow(new Object[]{v.user.name, v.user.surname, v.user.email, v.user.phoneNumber, v.date, v.hour});
+                            }
+                        }
                         break;
                     }
                 }
@@ -176,7 +188,7 @@ public class departementGUI extends JFrame {
                 String currentOWName = OWBox.getSelectedItem().toString();
                 OfficeWorker currentOW = null;
                 for (OfficeWorker ow:listOfOW) {
-                    if(ow.name.equals(currentOWName)){
+                    if(ow.name.equals(currentOWName.split(" ")[0])){
                         currentOW = ow;
                     }
                 }
