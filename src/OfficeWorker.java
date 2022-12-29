@@ -4,8 +4,8 @@ public class OfficeWorker extends User{
     String password;
     Department department;
 
-    public OfficeWorker(int id, String name, String surname, String email, String phoneNumber, int yearsOfWork, float salary, String password, Department department) {
-        super(id, name, surname, email, phoneNumber);
+    public OfficeWorker(String PESEL, String name, String surname, String email, String phoneNumber, int yearsOfWork, float salary, String password, Department department) {
+        super(PESEL, name, surname, email, phoneNumber);
         this.yearsOfWork = yearsOfWork;
         this.salary = salary;
         this.password = password;

@@ -1,9 +1,8 @@
 public class User {
-    String name, surname, email, phoneNumber;
-    int id;
+    String PESEL, name, surname, email, phoneNumber;
 
-    public User(int id, String name, String surname, String email, String phoneNumber) {
-        this.id = id;
+    public User(String PESEL, String name, String surname, String email, String phoneNumber) {
+        this.PESEL = PESEL;
         this.name = name;
         this.surname = surname;
         this.email = email;

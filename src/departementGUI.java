@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class departementGUI extends JFrame {
     private javax.swing.JPanel mainPanel;
@@ -16,13 +17,13 @@ public class departementGUI extends JFrame {
     private JPanel OWPanel;
     private JPanel OWLogin;
     private JLabel OWNameLabel;
-    private JTextField OWNameInput;
+    private JTextField OWPeselInput;
     private JLabel OWPasswordLabel;
     private JPasswordField OWPasswordInput;
     private JLabel AdminHelloLabel;
     private JPanel AdminPanel;
     private JPanel AdminLogin;
-    private JTextField AdminNameInput;
+    private JTextField AdminPeselInput;
     private JPasswordField AdminPasswordInput;
     private JLabel AdminPasswordLabel;
     private JLabel AdminLabelName;
@@ -47,16 +48,16 @@ public class departementGUI extends JFrame {
     private JTable OWListOfVisits;
     private JTable adminListOfVisits;
     //Admin instance - there is only one admin
-    Admin admin = new Admin(1,"Zyta", "Guzek", "zg@gmail.com", "111222333", "idk", "admin123");
+    Admin admin = new Admin("61081036478","Zyta", "Guzek", "zg@gmail.com", "111222333", "admin123");
 
     //Office Workers
     Department d1 = new Department("1","ZUS", "Izdebki", "21-37");
     Department d2 = new Department("2","KRUS", "ChujCieTo", "22-37");
     Department d3 = new Department("3","Zakład pogrzebowy", "Dupa", "22-37");
 
-    OfficeWorker OW1 = new OfficeWorker(1, "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1", d1);
-    OfficeWorker OW2 = new OfficeWorker(2, "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2", d2);
-    OfficeWorker OW3 = new OfficeWorker(3, "Dzban", "Dupa", "jd@gmail.com", "222333544", 2,4600, "dupa2", d3);
+    OfficeWorker OW1 = new OfficeWorker("73020468529", "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1", d1);
+    OfficeWorker OW2 = new OfficeWorker("58091781218", "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2", d2);
+    OfficeWorker OW3 = new OfficeWorker("91012786242", "Dzban", "Dupa", "jd@gmail.com", "222333544", 2,4600, "dupa2", d3);
 
     ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2, OW3));
     ArrayList<Department> listOfDepartments = new ArrayList<Department>(Arrays.asList(d1, d2, d3));
@@ -90,13 +91,13 @@ public class departementGUI extends JFrame {
         AdminLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String userName = AdminNameInput.getText();
-                String userPassword = String.valueOf(AdminPasswordInput.getPassword());
+                String pesel = AdminPeselInput.getText();
+                String password = String.valueOf(AdminPasswordInput.getPassword());
 
-                boolean isNameCorrect = userName.equals(admin.name);
-                boolean isPasswordCorrect = userPassword.equals(admin.password);
+                boolean isPeselCorrect = pesel.equals(admin.PESEL);
+                boolean isPasswordCorrect = password.equals(admin.password);
 
-                if(isNameCorrect && isPasswordCorrect){
+                if(isPeselCorrect && isPasswordCorrect){
                     AdminInfo.setVisible(true);
                     AdminLogoutButton.setEnabled(true);
                     AdminLoginButton.setEnabled(false);
@@ -118,7 +119,7 @@ public class departementGUI extends JFrame {
         AdminLogoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AdminNameInput.setText("");
+                AdminPeselInput.setText("");
                 AdminPasswordInput.setText("");
                 AdminInfo.setVisible(false);
                 AdminLogoutButton.setEnabled(false);
@@ -130,12 +131,12 @@ public class departementGUI extends JFrame {
         OWLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String userName = OWNameInput.getText();
-                String userPassword = String.valueOf(OWPasswordInput.getPassword());
+                String pesel = OWPeselInput.getText();
+                String password = String.valueOf(OWPasswordInput.getPassword());
                 boolean isLogged = false;
 
                 for(OfficeWorker OW : listOfOW) {
-                    if (OW.name.equals(userName) && OW.password.equals(userPassword)) {
+                    if (OW.PESEL.equals(pesel) && OW.password.equals(password)) {
                         isLogged = true;
                         OWInfo.setVisible(true);
                         OWLogoutButton.setEnabled(true);
@@ -148,7 +149,7 @@ public class departementGUI extends JFrame {
                         OWListOfVisits.setModel(dtm);
 
                         for (Visit v:listOfVisits) {
-                            if(v.officeWorker.name.equals(OW.name)){
+                            if(v.officeWorker.PESEL.equals(OW.PESEL)){
                                 dtm.addRow(new Object[]{v.user.name, v.user.surname, v.user.email, v.user.phoneNumber, v.date, v.hour});
                             }
                         }
@@ -163,7 +164,7 @@ public class departementGUI extends JFrame {
         OWLogoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OWNameInput.setText("");
+                OWPeselInput.setText("");
                 OWPasswordInput.setText("");
                 OWInfo.setVisible(false);
                 OWLogoutButton.setEnabled(false);
@@ -191,14 +192,15 @@ public class departementGUI extends JFrame {
                 String userSurname = userSurnameInput.getText();
                 String userEmail = userEmailInput.getText();
                 String userPhone= userPhoneNumberInput.getText();
-
-                User newUser = new User(1, userName, userSurname, userEmail, userPhone);
+                Random r = new Random();
+                long randomPesel = r.nextInt(1_000_000_000) + (r.nextInt(90) + 10) * 1_000_000_000L;
+                User newUser = new User(Long.toString(randomPesel), userName, userSurname, userEmail, userPhone);
                 String dateOfVisit = dateInput.getText();
                 String hourOfVisit = hourInput.getText();
                 String currentOWName = OWBox.getSelectedItem().toString();
                 OfficeWorker currentOW = null;
                 for (OfficeWorker ow:listOfOW) {
-                    if(ow.name.equals(currentOWName.split(" ")[0])){
+                    if(ow.name.equals(currentOWName.split(" ")[0]) && ow.surname.equals(currentOWName.split(" ")[1])){
                         currentOW = ow;
                     }
                 }
