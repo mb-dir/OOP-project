@@ -67,7 +67,6 @@ public class departementGUI extends JFrame {
     public static void main(String[] args) {
         departementGUI departementGUIInstance = new departementGUI();
         departementGUIInstance.setVisible(true);
-
     }
 
     public departementGUI(){
@@ -76,16 +75,7 @@ public class departementGUI extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 500);
 
-        //global styles
-        OWHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
-        AdminHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
-        UserHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
-
-        //Basic combobox setup
-        departmentsBox.addItem("");
-        for (Department d:listOfDepartments) {
-            departmentsBox.addItem(d.name);
-        }
+        setUpBasicView();
 
         //Admin login
         AdminLoginButton.addActionListener(new ActionListener() {
@@ -119,11 +109,7 @@ public class departementGUI extends JFrame {
         AdminLogoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AdminPeselInput.setText("");
-                AdminPasswordInput.setText("");
-                AdminInfo.setVisible(false);
-                AdminLogoutButton.setEnabled(false);
-                AdminLoginButton.setEnabled(true);
+                logoutHandler("Admin");
             }
         });
 
@@ -164,11 +150,7 @@ public class departementGUI extends JFrame {
         OWLogoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OWPeselInput.setText("");
-                OWPasswordInput.setText("");
-                OWInfo.setVisible(false);
-                OWLogoutButton.setEnabled(false);
-                OWLoginButton.setEnabled(true);
+                logoutHandler("OW");
             }
         });
         departmentsBox.addActionListener(new ActionListener() {
@@ -210,5 +192,37 @@ public class departementGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
             }
         });
+    }
+
+    private void setUpBasicView(){
+        //global styles
+        OWHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
+        AdminHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
+        UserHelloLabel.setFont(new Font("Serif", Font.PLAIN, 32));
+
+        //Basic combobox setup
+        departmentsBox.addItem("");
+        for (Department d:listOfDepartments) {
+            departmentsBox.addItem(d.name);
+        }
+    }
+
+    private void logoutHandler(String role){
+        if(role.equals("OW")){
+            OWPeselInput.setText("");
+            OWPasswordInput.setText("");
+            OWInfo.setVisible(false);
+            OWLogoutButton.setEnabled(false);
+            OWLoginButton.setEnabled(true);
+        }else if(role.equals("Admin")){
+            AdminPeselInput.setText("");
+            AdminPasswordInput.setText("");
+            AdminInfo.setVisible(false);
+            AdminLogoutButton.setEnabled(false);
+            AdminLoginButton.setEnabled(true);
+        }
+        else {
+            throw new IllegalArgumentException("Invalid role!");
+        }
     }
 }
