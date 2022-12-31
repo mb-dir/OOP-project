@@ -88,24 +88,13 @@ public class departementGUI extends JFrame {
                 boolean isPasswordCorrect = password.equals(admin.password);
 
                 if(isPeselCorrect && isPasswordCorrect){
-                    AdminInfo.setVisible(true);
-                    AdminLogoutButton.setEnabled(true);
-                    AdminLoginButton.setEnabled(false);
-                    AdminLabelInfo.setText("Witaj " + admin.name + ", oto lista wszystkich wizyt");
-
-                    DefaultTableModel dtm = new DefaultTableModel(0, 0);
-                    String header[] = new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" };
-                    dtm.setColumnIdentifiers(header);
-                    adminListOfVisits.setModel(dtm);
-
-                    for (Visit v:listOfVisits) {
-                        dtm.addRow(new Object[]{v.user.name, v.user.surname,v.user.PESEL ,v.user.email, v.user.phoneNumber, v.date, v.hour, v.officeWorker.name+" "+v.officeWorker.surname, v.officeWorker.department.name});
-                    }
+                    loginHandler("Admin", null);
                 }else{
                     JOptionPane.showMessageDialog(null,"Błędne dane!");
                 }
             }
         });
+        //Admin logout
         AdminLogoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,21 +113,7 @@ public class departementGUI extends JFrame {
                 for(OfficeWorker OW : listOfOW) {
                     if (OW.PESEL.equals(pesel) && OW.password.equals(password)) {
                         isLogged = true;
-                        OWInfo.setVisible(true);
-                        OWLogoutButton.setEnabled(true);
-                        OWLoginButton.setEnabled(false);
-                        OWLabelInfo.setText("Witaj " + OW.name + ", oto lista Twoich wizyt");
-
-                        DefaultTableModel dtm = new DefaultTableModel(0, 0);
-                        String header[] = new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina" };
-                        dtm.setColumnIdentifiers(header);
-                        OWListOfVisits.setModel(dtm);
-
-                        for (Visit v:listOfVisits) {
-                            if(v.officeWorker.PESEL.equals(OW.PESEL)){
-                                dtm.addRow(new Object[]{v.user.name, v.user.surname, v.user.PESEL, v.user.email, v.user.phoneNumber, v.date, v.hour});
-                            }
-                        }
+                        loginHandler("OW", OW);
                         break;
                     }
                 }
@@ -147,6 +122,7 @@ public class departementGUI extends JFrame {
                 }
             }
         });
+        //Office worker logout
         OWLogoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -220,8 +196,44 @@ public class departementGUI extends JFrame {
             AdminInfo.setVisible(false);
             AdminLogoutButton.setEnabled(false);
             AdminLoginButton.setEnabled(true);
+        } else {
+            throw new IllegalArgumentException("Invalid role!");
         }
-        else {
+    }
+
+    private void loginHandler(String role, OfficeWorker OW){
+        if(role.equals("OW")){
+            if(OW == null) throw new IllegalArgumentException("You need to pass an extra params!");
+            OWInfo.setVisible(true);
+            OWLogoutButton.setEnabled(true);
+            OWLoginButton.setEnabled(false);
+            OWLabelInfo.setText("Witaj " + OW.name + ", oto lista Twoich wizyt");
+
+            DefaultTableModel dtm = new DefaultTableModel(0, 0);
+            String header[] = new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina" };
+            dtm.setColumnIdentifiers(header);
+            OWListOfVisits.setModel(dtm);
+
+            for (Visit v:listOfVisits) {
+                if(v.officeWorker.PESEL.equals(OW.PESEL)){
+                    dtm.addRow(new Object[]{v.user.name, v.user.surname, v.user.PESEL, v.user.email, v.user.phoneNumber, v.date, v.hour});
+                }
+            }
+        }else if(role.equals("Admin")){
+            AdminInfo.setVisible(true);
+            AdminLogoutButton.setEnabled(true);
+            AdminLoginButton.setEnabled(false);
+            AdminLabelInfo.setText("Witaj " + admin.name + ", oto lista wszystkich wizyt");
+
+            DefaultTableModel dtm = new DefaultTableModel(0, 0);
+            String header[] = new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" };
+            dtm.setColumnIdentifiers(header);
+            adminListOfVisits.setModel(dtm);
+
+            for (Visit v:listOfVisits) {
+                dtm.addRow(new Object[]{v.user.name, v.user.surname,v.user.PESEL ,v.user.email, v.user.phoneNumber, v.date, v.hour, v.officeWorker.name+" "+v.officeWorker.surname, v.officeWorker.department.name});
+            }
+        }else {
             throw new IllegalArgumentException("Invalid role!");
         }
     }
