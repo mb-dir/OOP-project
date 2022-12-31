@@ -64,8 +64,6 @@ public class departementGUI extends JFrame {
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 500);
-
-
         setUpBasicView();
 
         //Admin login
@@ -184,30 +182,15 @@ public class departementGUI extends JFrame {
             OWLoginButton.setEnabled(false);
             OWLabelInfo.setText("Witaj " + OW.name + ", oto lista Twoich wizyt");
 
-            DefaultTableModel dtm = new DefaultTableModel(0, 0);
-            String header[] = new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina" };
-            dtm.setColumnIdentifiers(header);
-            OWListOfVisits.setModel(dtm);
+            createTable("OW", new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina" }, OW);
 
-            for (Visit v:listOfVisits) {
-                if(v.officeWorker.PESEL.equals(OW.PESEL)){
-                    dtm.addRow(new Object[]{v.user.name, v.user.surname, v.user.PESEL, v.user.email, v.user.phoneNumber, v.date, v.hour});
-                }
-            }
         }else if(role.equals("Admin")){
             AdminInfo.setVisible(true);
             AdminLogoutButton.setEnabled(true);
             AdminLoginButton.setEnabled(false);
             AdminLabelInfo.setText("Witaj " + admin.name + ", oto lista wszystkich wizyt");
 
-            DefaultTableModel dtm = new DefaultTableModel(0, 0);
-            String header[] = new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" };
-            dtm.setColumnIdentifiers(header);
-            adminListOfVisits.setModel(dtm);
-
-            for (Visit v:listOfVisits) {
-                dtm.addRow(new Object[]{v.user.name, v.user.surname,v.user.PESEL ,v.user.email, v.user.phoneNumber, v.date, v.hour, v.officeWorker.name+" "+v.officeWorker.surname, v.officeWorker.department.name});
-            }
+            createTable("Admin", new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" }, null);
         }else {
             throw new IllegalArgumentException("Invalid role!");
         }
@@ -235,5 +218,30 @@ public class departementGUI extends JFrame {
         }
 
         return new Visit(newUser, currentOW, dateOfVisit, hourOfVisit);
+    }
+
+    private void createTable(String role, String[] headers, OfficeWorker OW ){
+        if(role.equals("OW")){
+            if(OW == null) throw new IllegalArgumentException("You need to pass an extra params!");
+            DefaultTableModel dtm = new DefaultTableModel(0, 0);
+            dtm.setColumnIdentifiers(headers);
+            OWListOfVisits.setModel(dtm);
+
+            for (Visit v:listOfVisits) {
+                if(v.officeWorker.PESEL.equals(OW.PESEL)){
+                    dtm.addRow(new Object[]{v.user.name, v.user.surname, v.user.PESEL, v.user.email, v.user.phoneNumber, v.date, v.hour});
+                }
+            }
+        }else if(role.equals("Admin")){
+            DefaultTableModel dtm = new DefaultTableModel(0, 0);;
+            dtm.setColumnIdentifiers(headers);
+            adminListOfVisits.setModel(dtm);
+
+            for (Visit v:listOfVisits) {
+                dtm.addRow(new Object[]{v.user.name, v.user.surname,v.user.PESEL ,v.user.email, v.user.phoneNumber, v.date, v.hour, v.officeWorker.name+" "+v.officeWorker.surname, v.officeWorker.department.name});
+            }
+        }else {
+            throw new IllegalArgumentException("Invalid role!");
+        }
     }
 }
