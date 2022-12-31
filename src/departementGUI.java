@@ -146,23 +146,7 @@ public class departementGUI extends JFrame {
         visitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String userName = userNameInput.getText();
-                String userSurname = userSurnameInput.getText();
-                String userEmail = userEmailInput.getText();
-                String userPhone= userPhoneNumberInput.getText();
-                Random r = new Random();
-                long randomPesel = r.nextInt(1_000_000_000) + (r.nextInt(90) + 10) * 1_000_000_000L;
-                User newUser = new User(Long.toString(randomPesel), userName, userSurname, userEmail, userPhone);
-                String dateOfVisit = dateInput.getText();
-                String hourOfVisit = hourInput.getText();
-                String currentOWName = OWBox.getSelectedItem().toString();
-                OfficeWorker currentOW = null;
-                for (OfficeWorker ow:listOfOW) {
-                    if(ow.name.equals(currentOWName.split(" ")[0]) && ow.surname.equals(currentOWName.split(" ")[1])){
-                        currentOW = ow;
-                    }
-                }
-                Visit newVisit = new Visit(newUser, currentOW, dateOfVisit, hourOfVisit);
+                Visit newVisit = createNewVisit();
 
                 listOfVisits.add(newVisit);
                 JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
@@ -236,5 +220,29 @@ public class departementGUI extends JFrame {
         }else {
             throw new IllegalArgumentException("Invalid role!");
         }
+    }
+
+    private Visit createNewVisit(){
+        //get data from inputs
+        String userName = userNameInput.getText();
+        String userSurname = userSurnameInput.getText();
+        String userEmail = userEmailInput.getText();
+        String userPhone= userPhoneNumberInput.getText();
+        String dateOfVisit = dateInput.getText();
+        String hourOfVisit = hourInput.getText();
+        String currentOWName = OWBox.getSelectedItem().toString();
+
+        //prepare data for Visit constructor
+        Random r = new Random();
+        long randomPesel = r.nextInt(1_000_000_000) + (r.nextInt(90) + 10) * 1_000_000_000L;
+        User newUser = new User(Long.toString(randomPesel), userName, userSurname, userEmail, userPhone);
+        OfficeWorker currentOW = null;
+        for (OfficeWorker ow:listOfOW) {
+            if(ow.name.equals(currentOWName.split(" ")[0]) && ow.surname.equals(currentOWName.split(" ")[1])){
+                currentOW = ow;
+            }
+        }
+
+        return new Visit(newUser, currentOW, dateOfVisit, hourOfVisit);
     }
 }
