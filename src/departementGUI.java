@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class departementGUI extends JFrame {
@@ -47,33 +46,25 @@ public class departementGUI extends JFrame {
     private JButton visitButton;
     private JTable OWListOfVisits;
     private JTable adminListOfVisits;
-    //Admin instance - there is only one admin
-    Admin admin = new Admin("61081036478","Zyta", "Guzek", "zg@gmail.com", "111222333", "admin123");
 
-    //Office Workers
-    Department d1 = new Department("1","ZUS", "Izdebki", "21-37");
-    Department d2 = new Department("2","KRUS", "ChujCieTo", "22-37");
-    Department d3 = new Department("3","Zakład pogrzebowy", "Dupa", "22-37");
-
-    OfficeWorker OW1 = new OfficeWorker("73020468529", "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1", d1);
-    OfficeWorker OW2 = new OfficeWorker("58091781218", "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2", d2);
-    OfficeWorker OW3 = new OfficeWorker("91012786242", "Dzban", "Dupa", "jd@gmail.com", "222333544", 2,4600, "dupa2", d3);
-
-    ArrayList<OfficeWorker> listOfOW = new ArrayList<OfficeWorker>(Arrays.asList(OW1, OW2, OW3));
-    ArrayList<Department> listOfDepartments = new ArrayList<Department>(Arrays.asList(d1, d2, d3));
-
-    ArrayList<Visit> listOfVisits= new ArrayList<Visit>();
 
     public static void main(String[] args) {
         departementGUI departementGUIInstance = new departementGUI();
         departementGUIInstance.setVisible(true);
     }
 
+    DB db = new DB();
+    Admin admin = db.getAdmin();
+    ArrayList<OfficeWorker> listOfOW = db.getListOfOW();
+    ArrayList<Visit> listOfVisits = db.getListOfVisits();
+    ArrayList<Department> listOfDepartments = db.getListOfDepartments();
+
     public departementGUI(){
         super("e-Urząd");
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 500);
+
 
         setUpBasicView();
 
