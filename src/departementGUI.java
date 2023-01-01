@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class departementGUI extends JFrame {
     private javax.swing.JPanel mainPanel;
@@ -135,7 +137,31 @@ public class departementGUI extends JFrame {
         visitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Visit newVisit = createNewVisit();
+                //get data from inputs
+                String userName = userNameInput.getText();
+                String userSurname = userSurnameInput.getText();
+                String userEmail = userEmailInput.getText();
+                String userPhone= userPhoneNumberInput.getText();
+                String dateOfVisit = dateInput.getText();
+                String hourOfVisit = hourInput.getText();
+                String currentOWName = OWBox.getSelectedItem().toString();
+
+                String errorMessage = "";
+
+                boolean isNameValid = validName(userName);
+                boolean isSurnameValid = validName(userSurname);
+
+
+                if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
+                if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
+
+                if(!isNameValid || !isSurnameValid){
+                    JOptionPane.showMessageDialog(null, errorMessage);
+                    return;
+                }
+
+
+                Visit newVisit = createNewVisit(userName, userSurname, userEmail,userPhone, dateOfVisit, hourOfVisit, currentOWName);
 
                 listOfVisits.add(newVisit);
                 JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
@@ -196,15 +222,7 @@ public class departementGUI extends JFrame {
         }
     }
 
-    private Visit createNewVisit(){
-        //get data from inputs
-        String userName = userNameInput.getText();
-        String userSurname = userSurnameInput.getText();
-        String userEmail = userEmailInput.getText();
-        String userPhone= userPhoneNumberInput.getText();
-        String dateOfVisit = dateInput.getText();
-        String hourOfVisit = hourInput.getText();
-        String currentOWName = OWBox.getSelectedItem().toString();
+    private Visit createNewVisit(String userName, String userSurname, String userEmail, String userPhone, String dateOfVisit, String hourOfVisit, String currentOWName){
 
         //prepare data for Visit constructor
         Random r = new Random();
@@ -243,5 +261,15 @@ public class departementGUI extends JFrame {
         }else {
             throw new IllegalArgumentException("Invalid role!");
         }
+    }
+
+    private boolean validName(String name) {
+        String regex = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*";
+
+        Pattern p = Pattern.compile(regex, Pattern.UNICODE_CHARACTER_CLASS);
+        if (name == null || name.equals("")) return false;
+
+        Matcher m = p.matcher(name);
+        return m.matches();
     }
 }

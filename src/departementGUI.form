@@ -187,7 +187,9 @@
                                 <preferred-size width="150" height="-1"/>
                               </grid>
                             </constraints>
-                            <properties/>
+                            <properties>
+                              <toolTipText value="Godzina w formacjie: hh:mm"/>
+                            </properties>
                           </component>
                           <component id="343aa" class="javax.swing.JLabel">
                             <constraints>
