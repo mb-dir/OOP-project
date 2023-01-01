@@ -63,7 +63,7 @@ public class departementGUI extends JFrame {
         super("e-Urząd");
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(800, 500);
+        this.setSize(800, 600);
         setUpBasicView();
 
         //Admin login
