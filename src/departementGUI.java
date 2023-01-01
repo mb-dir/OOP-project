@@ -150,12 +150,16 @@ public class departementGUI extends JFrame {
 
                 boolean isNameValid = validName(userName);
                 boolean isSurnameValid = validName(userSurname);
+                boolean isEmailValid = validEmail(userEmail);
+                boolean isPhoneValid = phoneNumber(userPhone);
 
 
                 if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
                 if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
+                if(!isEmailValid) errorMessage+="Błędny format email\n";
+                if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
 
-                if(!isNameValid || !isSurnameValid){
+                if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid){
                     JOptionPane.showMessageDialog(null, errorMessage);
                     return;
                 }
@@ -266,10 +270,30 @@ public class departementGUI extends JFrame {
     private boolean validName(String name) {
         String regex = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*";
 
-        Pattern p = Pattern.compile(regex, Pattern.UNICODE_CHARACTER_CLASS);
+        Pattern p = Pattern.compile(regex);
         if (name == null || name.equals("")) return false;
 
         Matcher m = p.matcher(name);
+        return m.matches();
+    }
+
+    private boolean validEmail(String email) {
+        String regex = "^(.+)@(\\S+)$";
+
+        Pattern p = Pattern.compile(regex);
+        if (email == null || email.equals("")) return false;
+
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    private boolean phoneNumber(String number) {
+        String regex = "[0-9]{9}";
+
+        Pattern p = Pattern.compile(regex);
+        if (number == null || number.equals("")) return false;
+
+        Matcher m = p.matcher(number);
         return m.matches();
     }
 }
