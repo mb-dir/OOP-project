@@ -137,6 +137,8 @@ public class departementGUI extends JFrame {
         visitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String errorMessage = "";
+
                 //get data from inputs
                 String userName = userNameInput.getText();
                 String userSurname = userSurnameInput.getText();
@@ -144,22 +146,31 @@ public class departementGUI extends JFrame {
                 String userPhone= userPhoneNumberInput.getText();
                 String dateOfVisit = dateInput.getText();
                 String hourOfVisit = hourInput.getText();
-                String currentOWName = OWBox.getSelectedItem().toString();
-
-                String errorMessage = "";
+                Object currentOW = OWBox.getSelectedItem();
+                String currentDepartment = departmentsBox.getSelectedItem().toString();
+                String currentOWName="";
 
                 boolean isNameValid = validName(userName);
                 boolean isSurnameValid = validName(userSurname);
                 boolean isEmailValid = validEmail(userEmail);
                 boolean isPhoneValid = phoneNumber(userPhone);
-
+                boolean areComboboxesValid = false;
 
                 if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
                 if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
                 if(!isEmailValid) errorMessage+="Błędny format email\n";
                 if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
 
-                if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid){
+                if(currentOW!=null && !currentOW.toString().equals("") && !currentDepartment.equals("")){
+                    currentOWName = currentOW.toString();
+                    areComboboxesValid=true;
+                }else{
+                    errorMessage += "Musisz wybrać wydział i urzędnika";
+                }
+
+
+
+                if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid || !areComboboxesValid){
                     JOptionPane.showMessageDialog(null, errorMessage);
                     return;
                 }
@@ -296,4 +307,5 @@ public class departementGUI extends JFrame {
         Matcher m = p.matcher(number);
         return m.matches();
     }
+
 }
