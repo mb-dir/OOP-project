@@ -3,7 +3,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -155,22 +158,30 @@ public class departementGUI extends JFrame {
                 boolean isEmailValid = validEmail(userEmail);
                 boolean isPhoneValid = phoneNumber(userPhone);
                 boolean areComboboxesValid = false;
+                boolean isDateValid = false;
+                try {
+                    isDateValid = validDate(dateOfVisit);
+                } catch (ParseException ex) {
+                    ex.printStackTrace();
+                }
+                boolean isHourValid = validHour(hourOfVisit);
 
                 if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
                 if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
                 if(!isEmailValid) errorMessage+="Błędny format email\n";
                 if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
-
                 if(currentOW!=null && !currentOW.toString().equals("") && !currentDepartment.equals("")){
                     currentOWName = currentOW.toString();
                     areComboboxesValid=true;
                 }else{
-                    errorMessage += "Musisz wybrać wydział i urzędnika";
+                    errorMessage += "Musisz wybrać wydział i urzędnika\n";
                 }
+                if(!isDateValid) errorMessage+="Błędny format daty\n";
+                if(!isHourValid) errorMessage+="Błędny format godziny\n";
 
 
 
-                if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid || !areComboboxesValid){
+                if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid || !areComboboxesValid || !isDateValid || !isHourValid){
                     JOptionPane.showMessageDialog(null, errorMessage);
                     return;
                 }
@@ -308,4 +319,34 @@ public class departementGUI extends JFrame {
         return m.matches();
     }
 
+    private boolean validDate(String date) throws ParseException {
+        String regex = "\\s*(3[01]|[12][0-9]|0?[1-9])\\.(1[012]|0?[1-9])\\.((?:19|20)\\d{2})\\s*$";
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+
+        try {
+            Date tempDate = formatter.parse(date);
+            if (tempDate.before(new Date())) {
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        Pattern p = Pattern.compile(regex);
+        if (date == null || date.equals("")) return false;
+
+        Matcher m = p.matcher(date);
+        return m.matches();
+    }
+
+    private boolean validHour(String hour) {
+        String regex = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$";
+
+        Pattern p = Pattern.compile(regex);
+        if (hour == null || hour.equals("")) return false;
+
+        Matcher m = p.matcher(hour);
+        return m.matches();
+    }
 }
