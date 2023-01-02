@@ -120,8 +120,6 @@ public class departementGUI extends JFrame {
             }
         });
         visitButton.addActionListener(e -> {
-            String errorMessage = "";
-
             //get data from inputs
             String userName = userNameInput.getText();
             String userSurname = userSurnameInput.getText();
@@ -130,7 +128,7 @@ public class departementGUI extends JFrame {
             String dateOfVisit = dateInput.getText();
             String hourOfVisit = hourInput.getText();
             Object currentOW = OWBox.getSelectedItem();
-            String currentDepartment = departmentsBox.getSelectedItem().toString();
+            String currentDepartment = Objects.requireNonNull(departmentsBox.getSelectedItem()).toString();
             String currentOWName="";
 
             boolean isNameValid = validName(userName);
@@ -146,23 +144,13 @@ public class departementGUI extends JFrame {
             }
             boolean isHourValid = validHour(hourOfVisit);
 
-            if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
-            if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
-            if(!isEmailValid) errorMessage+="Błędny format email\n";
-            if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
             if(currentOW!=null && !currentOW.toString().equals("") && !currentDepartment.equals("")){
                 currentOWName = currentOW.toString();
                 areComboboxesValid=true;
-            }else{
-                errorMessage += "Musisz wybrać wydział i urzędnika\n";
             }
-            if(!isDateValid) errorMessage+="Błędny format daty\n";
-            if(!isHourValid) errorMessage+="Błędny format godziny\n";
-
-
 
             if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid || !areComboboxesValid || !isDateValid || !isHourValid){
-                JOptionPane.showMessageDialog(null, errorMessage);
+                creatErrorMessage(isNameValid, isSurnameValid,isEmailValid,isPhoneValid, areComboboxesValid,isDateValid,isHourValid);
                 return;
             }
 
@@ -325,5 +313,18 @@ public class departementGUI extends JFrame {
 
         Matcher m = p.matcher(hour);
         return m.matches();
+    }
+
+    private void creatErrorMessage(boolean isNameValid, boolean isSurnameValid, boolean isEmailValid, boolean isPhoneValid, boolean areComboboxesValid, boolean isDateValid, boolean isHourValid){
+        String errorMessage = "";
+        if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
+        if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
+        if(!isEmailValid) errorMessage+="Błędny format email\n";
+        if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
+        if(!areComboboxesValid) errorMessage += "Musisz wybrać wydział i urzędnika\n";
+        if(!isDateValid) errorMessage+="Błędny format daty\n";
+        if(!isHourValid) errorMessage+="Błędny format godziny\n";
+
+        JOptionPane.showMessageDialog(null, errorMessage);
     }
 }
