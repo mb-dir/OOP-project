@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +50,8 @@ public class departementGUI extends JFrame {
     private JButton visitButton;
     private JTable OWListOfVisits;
     private JTable adminListOfVisits;
+    private JButton deleteButton;
+    public int chosenRow = -1;
 
 
     public static void main(String[] args) {
@@ -158,6 +158,19 @@ public class departementGUI extends JFrame {
 
             listOfVisits.add(newVisit);
             JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
+        });
+
+        adminListOfVisits.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chosenRow = adminListOfVisits.rowAtPoint(evt.getPoint());
+                deleteButton.setEnabled(chosenRow >= 0);
+            }
+        });
+
+        deleteButton.addActionListener(e->{
+            listOfVisits.remove(chosenRow);
+            createTable("Admin", new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" }, null);
         });
     }
 
