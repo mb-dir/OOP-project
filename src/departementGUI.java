@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,8 +45,8 @@ public class departementGUI extends JFrame {
     private JTextField userSurnameInput;
     private JTextField userEmailInput;
     private JTextField userPhoneNumberInput;
-    private JComboBox departmentsBox;
-    private JComboBox OWBox;
+    private JComboBox<String> departmentsBox;
+    private JComboBox<String> OWBox;
     private JTextField dateInput;
     private JTextField hourInput;
     private JButton visitButton;
@@ -72,126 +73,103 @@ public class departementGUI extends JFrame {
         setUpBasicView();
 
         //Admin login
-        AdminLoginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String pesel = AdminPeselInput.getText();
-                String password = String.valueOf(AdminPasswordInput.getPassword());
+        AdminLoginButton.addActionListener(e -> {
+            String pesel = AdminPeselInput.getText();
+            String password = String.valueOf(AdminPasswordInput.getPassword());
 
-                boolean isPeselCorrect = pesel.equals(admin.PESEL);
-                boolean isPasswordCorrect = password.equals(admin.password);
+            boolean isPeselCorrect = pesel.equals(admin.PESEL);
+            boolean isPasswordCorrect = password.equals(admin.password);
 
-                if(isPeselCorrect && isPasswordCorrect){
-                    loginHandler("Admin", null);
-                }else{
-                    JOptionPane.showMessageDialog(null,"Błędne dane!");
-                }
+            if(isPeselCorrect && isPasswordCorrect){
+                loginHandler("Admin", null);
+            }else{
+                JOptionPane.showMessageDialog(null,"Błędne dane!");
             }
         });
         //Admin logout
-        AdminLogoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                logoutHandler("Admin");
-            }
-        });
+        AdminLogoutButton.addActionListener(e -> logoutHandler("Admin"));
 
         //Office worker login
-        OWLoginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String pesel = OWPeselInput.getText();
-                String password = String.valueOf(OWPasswordInput.getPassword());
-                boolean isLogged = false;
+        OWLoginButton.addActionListener(e -> {
+            String pesel = OWPeselInput.getText();
+            String password = String.valueOf(OWPasswordInput.getPassword());
+            boolean isLogged = false;
 
-                for(OfficeWorker OW : listOfOW) {
-                    if (OW.PESEL.equals(pesel) && OW.password.equals(password)) {
-                        isLogged = true;
-                        loginHandler("OW", OW);
-                        break;
-                    }
+            for(OfficeWorker OW : listOfOW) {
+                if (OW.PESEL.equals(pesel) && OW.password.equals(password)) {
+                    isLogged = true;
+                    loginHandler("OW", OW);
+                    break;
                 }
-                if(!isLogged){
-                    JOptionPane.showMessageDialog(null,"Błędne dane!");
-                }
+            }
+            if(!isLogged){
+                JOptionPane.showMessageDialog(null,"Błędne dane!");
             }
         });
         //Office worker logout
-        OWLogoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                logoutHandler("OW");
-            }
-        });
-        departmentsBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String currentDepartment = departmentsBox.getSelectedItem().toString();
+        OWLogoutButton.addActionListener(e -> logoutHandler("OW"));
+        departmentsBox.addActionListener(e -> {
+            String currentDepartment = Objects.requireNonNull(departmentsBox.getSelectedItem()).toString();
 
-                OWBox.removeAllItems();
-                OWBox.addItem("");
-                for (OfficeWorker ow:listOfOW) {
-                    if(ow.department.name.equals(currentDepartment)){
-                        OWBox.addItem(ow.name + " " + ow.surname);
-                    }
+            OWBox.removeAllItems();
+            OWBox.addItem("");
+            for (OfficeWorker ow:listOfOW) {
+                if(ow.department.name.equals(currentDepartment)){
+                    OWBox.addItem(ow.name + " " + ow.surname);
                 }
             }
         });
-        visitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String errorMessage = "";
+        visitButton.addActionListener(e -> {
+            String errorMessage = "";
 
-                //get data from inputs
-                String userName = userNameInput.getText();
-                String userSurname = userSurnameInput.getText();
-                String userEmail = userEmailInput.getText();
-                String userPhone= userPhoneNumberInput.getText();
-                String dateOfVisit = dateInput.getText();
-                String hourOfVisit = hourInput.getText();
-                Object currentOW = OWBox.getSelectedItem();
-                String currentDepartment = departmentsBox.getSelectedItem().toString();
-                String currentOWName="";
+            //get data from inputs
+            String userName = userNameInput.getText();
+            String userSurname = userSurnameInput.getText();
+            String userEmail = userEmailInput.getText();
+            String userPhone= userPhoneNumberInput.getText();
+            String dateOfVisit = dateInput.getText();
+            String hourOfVisit = hourInput.getText();
+            Object currentOW = OWBox.getSelectedItem();
+            String currentDepartment = departmentsBox.getSelectedItem().toString();
+            String currentOWName="";
 
-                boolean isNameValid = validName(userName);
-                boolean isSurnameValid = validName(userSurname);
-                boolean isEmailValid = validEmail(userEmail);
-                boolean isPhoneValid = phoneNumber(userPhone);
-                boolean areComboboxesValid = false;
-                boolean isDateValid = false;
-                try {
-                    isDateValid = validDate(dateOfVisit);
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
-                }
-                boolean isHourValid = validHour(hourOfVisit);
-
-                if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
-                if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
-                if(!isEmailValid) errorMessage+="Błędny format email\n";
-                if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
-                if(currentOW!=null && !currentOW.toString().equals("") && !currentDepartment.equals("")){
-                    currentOWName = currentOW.toString();
-                    areComboboxesValid=true;
-                }else{
-                    errorMessage += "Musisz wybrać wydział i urzędnika\n";
-                }
-                if(!isDateValid) errorMessage+="Błędny format daty\n";
-                if(!isHourValid) errorMessage+="Błędny format godziny\n";
-
-
-
-                if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid || !areComboboxesValid || !isDateValid || !isHourValid){
-                    JOptionPane.showMessageDialog(null, errorMessage);
-                    return;
-                }
-
-
-                Visit newVisit = createNewVisit(userName, userSurname, userEmail,userPhone, dateOfVisit, hourOfVisit, currentOWName);
-
-                listOfVisits.add(newVisit);
-                JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
+            boolean isNameValid = validName(userName);
+            boolean isSurnameValid = validName(userSurname);
+            boolean isEmailValid = validEmail(userEmail);
+            boolean isPhoneValid = phoneNumber(userPhone);
+            boolean areComboboxesValid = false;
+            boolean isDateValid = false;
+            try {
+                isDateValid = validDate(dateOfVisit);
+            } catch (ParseException ex) {
+                ex.printStackTrace();
             }
+            boolean isHourValid = validHour(hourOfVisit);
+
+            if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
+            if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
+            if(!isEmailValid) errorMessage+="Błędny format email\n";
+            if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
+            if(currentOW!=null && !currentOW.toString().equals("") && !currentDepartment.equals("")){
+                currentOWName = currentOW.toString();
+                areComboboxesValid=true;
+            }else{
+                errorMessage += "Musisz wybrać wydział i urzędnika\n";
+            }
+            if(!isDateValid) errorMessage+="Błędny format daty\n";
+            if(!isHourValid) errorMessage+="Błędny format godziny\n";
+
+
+
+            if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid || !areComboboxesValid || !isDateValid || !isHourValid){
+                JOptionPane.showMessageDialog(null, errorMessage);
+                return;
+            }
+
+            Visit newVisit = createNewVisit(userName, userSurname, userEmail,userPhone, dateOfVisit, hourOfVisit, currentOWName);
+
+            listOfVisits.add(newVisit);
+            JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
         });
     }
 
@@ -277,7 +255,7 @@ public class departementGUI extends JFrame {
                 }
             }
         }else if(role.equals("Admin")){
-            DefaultTableModel dtm = new DefaultTableModel(0, 0);;
+            DefaultTableModel dtm = new DefaultTableModel(0, 0);
             dtm.setColumnIdentifiers(headers);
             adminListOfVisits.setModel(dtm);
 
@@ -323,6 +301,9 @@ public class departementGUI extends JFrame {
         String regex = "\\s*(3[01]|[12][0-9]|0?[1-9])\\.(1[012]|0?[1-9])\\.((?:19|20)\\d{2})\\s*$";
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 
+        Pattern p = Pattern.compile(regex);
+        if (date == null || date.equals("")) return false;
+
         try {
             Date tempDate = formatter.parse(date);
             if (tempDate.before(new Date())) {
@@ -331,10 +312,6 @@ public class departementGUI extends JFrame {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
-        Pattern p = Pattern.compile(regex);
-        if (date == null || date.equals("")) return false;
 
         Matcher m = p.matcher(date);
         return m.matches();
