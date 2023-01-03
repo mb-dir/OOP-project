@@ -1,6 +1,10 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,6 +55,7 @@ public class departementGUI extends JFrame {
     private JTable OWListOfVisits;
     private JTable adminListOfVisits;
     private JButton deleteButton;
+    private JButton editButton;
     public int chosenRow = -1;
 
 
@@ -165,11 +170,26 @@ public class departementGUI extends JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 chosenRow = adminListOfVisits.rowAtPoint(evt.getPoint());
                 deleteButton.setEnabled(chosenRow >= 0);
+                editButton.setEnabled(chosenRow >= 0);
             }
         });
 
         deleteButton.addActionListener(e->{
             listOfVisits.remove(chosenRow);
+            createTable("Admin", new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" }, null);
+        });
+
+        editButton.addActionListener(e->{
+            String newDate = adminListOfVisits.getModel().getValueAt(chosenRow, 5).toString();
+            String newHour = adminListOfVisits.getModel().getValueAt(chosenRow, 6).toString();
+
+            Visit currentVisit = listOfVisits.get(chosenRow);
+            currentVisit.setDate(newDate);
+            currentVisit.setHour(newHour);
+
+            listOfVisits.remove(chosenRow);
+            listOfVisits.add(chosenRow, currentVisit);
+
             createTable("Admin", new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" }, null);
         });
     }
@@ -246,7 +266,12 @@ public class departementGUI extends JFrame {
     private void createTable(String role, String[] headers, OfficeWorker OW ){
         if(role.equals("OW")){
             if(OW == null) throw new IllegalArgumentException("You need to pass an extra params!");
-            DefaultTableModel dtm = new DefaultTableModel(0, 0);
+            DefaultTableModel dtm = new DefaultTableModel(){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
             dtm.setColumnIdentifiers(headers);
             OWListOfVisits.setModel(dtm);
 
@@ -256,13 +281,20 @@ public class departementGUI extends JFrame {
                 }
             }
         }else if(role.equals("Admin")){
-            DefaultTableModel dtm = new DefaultTableModel(0, 0);
+            DefaultTableModel dtm = new DefaultTableModel(){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    //Only 5th and 6th columns are editable
+                    return column == 5 || column == 6;
+                }
+            };
             dtm.setColumnIdentifiers(headers);
             adminListOfVisits.setModel(dtm);
 
             for (Visit v:listOfVisits) {
                 dtm.addRow(new Object[]{v.user.name, v.user.surname,v.user.PESEL ,v.user.email, v.user.phoneNumber, v.date, v.hour, v.officeWorker.name+" "+v.officeWorker.surname, v.officeWorker.department.name});
             }
+
         }else {
             throw new IllegalArgumentException("Invalid role!");
         }
