@@ -121,6 +121,7 @@ public class departementGUI extends JFrame {
             }
         });
         visitButton.addActionListener(e -> {
+            Validator valid = new Validator();
             //get data from inputs
             String userName = userNameInput.getText();
             String userSurname = userSurnameInput.getText();
@@ -132,18 +133,18 @@ public class departementGUI extends JFrame {
             String currentDepartment = Objects.requireNonNull(departmentsBox.getSelectedItem()).toString();
             String currentOWName="";
 
-            boolean isNameValid = validName(userName);
-            boolean isSurnameValid = validName(userSurname);
-            boolean isEmailValid = validEmail(userEmail);
-            boolean isPhoneValid = phoneNumber(userPhone);
+            boolean isNameValid = valid.validName(userName);
+            boolean isSurnameValid = valid.validName(userSurname);
+            boolean isEmailValid = valid.validEmail(userEmail);
+            boolean isPhoneValid = valid.phoneNumber(userPhone);
             boolean areComboboxesValid = false;
             boolean isDateValid = false;
             try {
-                isDateValid = validDate(dateOfVisit);
+                isDateValid = valid.validDate(dateOfVisit);
             } catch (ParseException ex) {
                 ex.printStackTrace();
             }
-            boolean isHourValid = validHour(hourOfVisit);
+            boolean isHourValid = valid.validHour(hourOfVisit);
 
             if(currentOW!=null && !currentOW.toString().equals("") && !currentDepartment.equals("")){
                 currentOWName = currentOW.toString();
@@ -151,7 +152,7 @@ public class departementGUI extends JFrame {
             }
 
             if(!isNameValid || !isSurnameValid || !isEmailValid || !isPhoneValid || !areComboboxesValid || !isDateValid || !isHourValid){
-                creatErrorMessage(isNameValid, isSurnameValid,isEmailValid,isPhoneValid, areComboboxesValid,isDateValid,isHourValid);
+                valid.creatErrorMessage(isNameValid, isSurnameValid, isEmailValid, isPhoneValid, areComboboxesValid, isDateValid, isHourValid);
                 return;
             }
 
@@ -296,76 +297,4 @@ public class departementGUI extends JFrame {
         }
     }
 
-    private boolean validName(String name) {
-        String regex = "[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*";
-
-        Pattern p = Pattern.compile(regex);
-        if (name == null || name.equals("")) return false;
-
-        Matcher m = p.matcher(name);
-        return m.matches();
-    }
-
-    private boolean validEmail(String email) {
-        String regex = "^(.+)@(\\S+)$";
-
-        Pattern p = Pattern.compile(regex);
-        if (email == null || email.equals("")) return false;
-
-        Matcher m = p.matcher(email);
-        return m.matches();
-    }
-
-    private boolean phoneNumber(String number) {
-        String regex = "[0-9]{9}";
-
-        Pattern p = Pattern.compile(regex);
-        if (number == null || number.equals("")) return false;
-
-        Matcher m = p.matcher(number);
-        return m.matches();
-    }
-
-    private boolean validDate(String date) throws ParseException {
-        String regex = "\\s*(3[01]|[12][0-9]|0?[1-9])\\.(1[012]|0?[1-9])\\.((?:19|20)\\d{2})\\s*$";
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-
-        Pattern p = Pattern.compile(regex);
-        if (date == null || date.equals("")) return false;
-
-        try {
-            Date tempDate = formatter.parse(date);
-            if (tempDate.before(new Date())) {
-                return false;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Matcher m = p.matcher(date);
-        return m.matches();
-    }
-
-    private boolean validHour(String hour) {
-        String regex = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$";
-
-        Pattern p = Pattern.compile(regex);
-        if (hour == null || hour.equals("")) return false;
-
-        Matcher m = p.matcher(hour);
-        return m.matches();
-    }
-
-    private void creatErrorMessage(boolean isNameValid, boolean isSurnameValid, boolean isEmailValid, boolean isPhoneValid, boolean areComboboxesValid, boolean isDateValid, boolean isHourValid){
-        String errorMessage = "";
-        if(!isNameValid) errorMessage+="Niedozwolone znaki w imieniu\n";
-        if(!isSurnameValid) errorMessage+="Niedozwolone znaki w nazwisku\n";
-        if(!isEmailValid) errorMessage+="Błędny format email\n";
-        if(!isPhoneValid) errorMessage+="Błędny format nr. telefonu\n";
-        if(!areComboboxesValid) errorMessage += "Musisz wybrać wydział i urzędnika\n";
-        if(!isDateValid) errorMessage+="Błędny format daty\n";
-        if(!isHourValid) errorMessage+="Błędny format godziny\n";
-
-        JOptionPane.showMessageDialog(null, errorMessage);
-    }
 }
