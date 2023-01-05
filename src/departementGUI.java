@@ -109,6 +109,8 @@ public class departementGUI extends JFrame {
         });
         //Office worker logout
         OWLogoutButton.addActionListener(e -> logoutHandler("OW"));
+
+        //Create departments lists
         departmentsBox.addActionListener(e -> {
             String currentDepartment = Objects.requireNonNull(departmentsBox.getSelectedItem()).toString();
 
@@ -120,6 +122,8 @@ public class departementGUI extends JFrame {
                 }
             }
         });
+
+        //Handle creating visit
         visitButton.addActionListener(e -> {
             Validator valid = new Validator();
             //get data from inputs
@@ -162,6 +166,7 @@ public class departementGUI extends JFrame {
             JOptionPane.showMessageDialog(null, "Wizyta została umówiona");
         });
 
+        //Find out which row is clicked
         adminListOfVisits.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -171,11 +176,14 @@ public class departementGUI extends JFrame {
             }
         });
 
+
+        //Admin can delete visit
         deleteButton.addActionListener(e->{
             listOfVisits.remove(chosenRow);
             createTable("Admin", new String[] { "Imie", "Nazwisko", "Pesel", "E-mail", "Numer tel.", "Data", "godzina", "urzędnik", "wydział" }, null);
         });
 
+        //Admin can edit visit
         editButton.addActionListener(e->{
             String newDate = adminListOfVisits.getModel().getValueAt(chosenRow, 5).toString();
             String newHour = adminListOfVisits.getModel().getValueAt(chosenRow, 6).toString();
@@ -263,6 +271,7 @@ public class departementGUI extends JFrame {
     private void createTable(String role, String[] headers, OfficeWorker OW ){
         if(role.equals("OW")){
             if(OW == null) throw new IllegalArgumentException("You need to pass an extra params!");
+            //Office worken cannot edit data
             DefaultTableModel dtm = new DefaultTableModel(){
                 @Override
                 public boolean isCellEditable(int row, int column) {
@@ -296,5 +305,4 @@ public class departementGUI extends JFrame {
             throw new IllegalArgumentException("Invalid role!");
         }
     }
-
 }

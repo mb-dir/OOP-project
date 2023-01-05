@@ -6,13 +6,13 @@ public class DB {
     Admin admin = new Admin("61081036478","Zyta", "Guzek", "zg@gmail.com", "111222333", "admin123");
 
     //Office Workers
-    Department d1 = new Department("1","ZUS", "Izdebki", "21-37");
-    Department d2 = new Department("2","KRUS", "ChujCieTo", "22-37");
-    Department d3 = new Department("3","Zakład pogrzebowy", "Dupa", "22-37");
+    Department d1 = new Department("1","ZUS", "Izdebki", "11-111");
+    Department d2 = new Department("2","KRUS", "Rzeszów", "22-222");
+    Department d3 = new Department("3","PZU", "Pogórze", "33-333");
 
-    OfficeWorker OW1 = new OfficeWorker("73020468529", "Pawel", "Nedved", "pn@gmail.com", "222333444", 2,4500, "dupa1", d1);
-    OfficeWorker OW2 = new OfficeWorker("58091781218", "Jan", "Nedved", "jn@gmail.com", "222333544", 2,4600, "dupa2", d2);
-    OfficeWorker OW3 = new OfficeWorker("91012786242", "Dzban", "Dupa", "jd@gmail.com", "222333544", 2,4600, "dupa2", d3);
+    OfficeWorker OW1 = new OfficeWorker("73020468529", "Paweł", "Olkiewicz", "po@gmail.com", "222333444", 2,4500, "tajnehaslo", d1);
+    OfficeWorker OW2 = new OfficeWorker("58091781218", "Jan", "Urban", "ju@gmail.com", "222333544", 2,4600, "tajnehaslo", d2);
+    OfficeWorker OW3 = new OfficeWorker("91012786242", "Dariusz", "Pataj", "jp@gmail.com", "222333544", 2,4600, "tajnehaslo", d3);
 
     ArrayList<OfficeWorker> listOfOW = new ArrayList<>(Arrays.asList(OW1, OW2, OW3));
     ArrayList<Department> listOfDepartments = new ArrayList<>(Arrays.asList(d1, d2, d3));
