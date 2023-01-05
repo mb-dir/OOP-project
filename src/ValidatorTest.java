@@ -51,4 +51,34 @@ class ValidatorTest {
         var validator = new Validator();
         assertTrue(validator.validEmail("dobrymail@gmail.com"));
     }
+
+    @Test
+    void validPhoneNumberWhenNull(){
+        var validator = new Validator();
+        assertFalse(validator.phoneNumber(null));
+    }
+
+    @Test
+    void validPhoneNumberWhenEmpty(){
+        var validator = new Validator();
+        assertFalse(validator.phoneNumber(""));
+    }
+
+    @Test
+    void validPhoneNumberWhenIncorrectFormat(){
+        var validator = new Validator();
+        assertFalse(validator.phoneNumber("1221"));
+    }
+
+    @Test
+    void validPhoneNumberWhenForbiddenCharacters(){
+        var validator = new Validator();
+        assertFalse(validator.phoneNumber("12345678a"));
+    }
+
+    @Test
+    void validPhoneNumberWhenCorrect(){
+        var validator = new Validator();
+        assertTrue(validator.phoneNumber("123456789"));
+    }
 }
