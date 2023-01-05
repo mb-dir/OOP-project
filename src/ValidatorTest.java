@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ValidatorTest {
@@ -80,5 +82,35 @@ class ValidatorTest {
     void validPhoneNumberWhenCorrect(){
         var validator = new Validator();
         assertTrue(validator.phoneNumber("123456789"));
+    }
+
+    @Test
+    void validDateWhenNull() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validDate(null));
+    }
+
+    @Test
+    void validDateWhenEmpty() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validDate(null));
+    }
+
+    @Test
+    void validDateWhenIncorrectFormat() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validDate("12/12/2023"));
+    }
+
+    @Test
+    void validDateWhenDateIsPast() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validDate("12.12.2022"));
+    }
+
+    @Test
+    void validDateWhenDateIsCorrect() throws ParseException {
+        var validator = new Validator();
+        assertTrue(validator.validDate("12.12.2023"));
     }
 }
