@@ -27,4 +27,28 @@ class ValidatorTest {
         var validator = new Validator();
         assertTrue(validator.validName("Jan"));
     }
+
+    @Test
+    void validEmailWhenNull(){
+        var validator = new Validator();
+        assertFalse(validator.validEmail(null));
+    }
+
+    @Test
+    void validEmailWhenEmpty(){
+        var validator = new Validator();
+        assertFalse(validator.validEmail(""));
+    }
+
+    @Test
+    void validEmailWhenIncorrect(){
+        var validator = new Validator();
+        assertFalse(validator.validEmail("zlymail.com"));
+    }
+
+    @Test
+    void validEmailWhenCorrect(){
+        var validator = new Validator();
+        assertTrue(validator.validEmail("dobrymail@gmail.com"));
+    }
 }
