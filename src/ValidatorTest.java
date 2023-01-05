@@ -113,4 +113,34 @@ class ValidatorTest {
         var validator = new Validator();
         assertTrue(validator.validDate("12.12.2023"));
     }
+
+    @Test
+    void validHourWhenNull() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validHour(null));
+    }
+
+    @Test
+    void validHourWhenEmpty() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validHour(""));
+    }
+
+    @Test
+    void validHourWhenIncorrectFormat() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validHour("11.15"));
+    }
+
+    @Test
+    void validHourWhenInvalid() throws ParseException {
+        var validator = new Validator();
+        assertFalse(validator.validHour("31:10"));
+    }
+
+    @Test
+    void validHourWhenCorrect() throws ParseException {
+        var validator = new Validator();
+        assertTrue(validator.validHour("11:10"));
+    }
 }
